@@ -6,10 +6,6 @@ Whack the negative emotions. Grab the positive ones. Score as high as you can in
 
 **[Watch the demo video](https://youtu.be/zmHXXFmtuQs)**
 
-<!-- Add a screenshot or GIF here once you have one:
-![Gameplay](screenshots/gameplay.png)
--->
-
 ---
 
 ## About
