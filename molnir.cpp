@@ -7,7 +7,12 @@
 #include <ctime>
 #include <cstdlib>
 #include <random>
+#include <cstring>
 using namespace std;
+
+extern int bgi_textheight(const char *s) asm("_Z10textheightPKc");
+#define textheight bgi_textheight
+
 
 const int SCREENWIDTH = getmaxwidth();
 const int SCREENHEIGHT = getmaxheight();
@@ -24,6 +29,27 @@ const int SCOREBOARD_HEIGHT = 200;
 const int MAX_MARKS = 7;
 bool isEmoticonClicked = false;
 
+bool waitForEmoticonClick(int x, int y, int size, int ms)
+{
+    const int step = 20; // check for a click every 20 ms
+    for (int elapsed = 0; elapsed < ms; elapsed += step)
+    {
+        if (ismouseclick(WM_LBUTTONDOWN))
+        {
+            int clickX = mousex();
+            int clickY = mousey();
+            clearmouseclick(WM_LBUTTONDOWN);
+
+            int dx = clickX - x; // distance from the emoticon's centre
+            int dy = clickY - y;
+            if (dx * dx + dy * dy <= size * size) // inside the face
+                return true;
+        }
+        delay(step);
+    }
+    return false;
+}
+
 void drawHappyEmoticon(int x, int y, int size)
 {
     setcolor(YELLOW); // Yellow face
@@ -38,59 +64,9 @@ void drawHappyEmoticon(int x, int y, int size)
     setcolor(RED); // Red mouth
     setlinestyle(SOLID_LINE, 0, 3);
     arc(x, y + size / 8, 205, 335, size / 2 - size / 6);
-    if (ismouseclick(WM_LBUTTONDOWN) && isEmoticonClicked == false)
-    {
-        clearmouseclick(WM_LBUTTONDOWN);
-        int clickX = mousex();
-        int clickY = mousey();
-
-        if (clickX >= 350 && clickX <= 470)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 620 && clickX <= 740)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 890 && clickX <= 1010)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-    }
-    delay(1000); // Let the happy emoticon to delay to 1 second
+    // Show the emoticon for 1 second and see if it gets clicked
+    if (waitForEmoticonClick(x, y, size, 1000))
+        isEmoticonClicked = true;
 }
 
 void drawAngryEmoticon(int x, int y, int size)
@@ -112,59 +88,9 @@ void drawAngryEmoticon(int x, int y, int size)
     setcolor(BLACK); // Black mouth
     setlinestyle(SOLID_LINE, 0, 3);
     arc(x, y + size / 3 + size / 6, 25, 155, size / 2 - size / 6);
-    if (ismouseclick(WM_LBUTTONDOWN) && isEmoticonClicked == false)
-    {
-        clearmouseclick(WM_LBUTTONDOWN);
-        int clickX = mousex();
-        int clickY = mousey();
-
-        if (clickX >= 350 && clickX <= 470)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 620 && clickX <= 740)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 890 && clickX <= 1010)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-    }
-    delay(1000); // Let the angry emoticon to delay to 1 second
+    // Show the emoticon for 1 second and see if it gets clicked
+    if (waitForEmoticonClick(x, y, size, 1000))
+        isEmoticonClicked = true;
 }
 
 void drawSadEmoticon(int x, int y, int size)
@@ -181,58 +107,9 @@ void drawSadEmoticon(int x, int y, int size)
     setcolor(BLACK); // Black mouth
     setlinestyle(SOLID_LINE, 0, 3);
     arc(x, y + size / 3 + size / 6, 25, 155, size / 2 - size / 6 + 10); // Frown arc of the mouth
-    if (ismouseclick(WM_LBUTTONDOWN) && isEmoticonClicked == false)
-    {
-        clearmouseclick(WM_LBUTTONDOWN);
-        int clickX = mousex();
-        int clickY = mousey();
-        if (clickX >= 350 && clickX <= 470)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 620 && clickX <= 740)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-        else if (clickX >= 890 && clickX <= 1010)
-        {
-            if (clickY >= 149 && clickY <= 269)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 309 && clickY <= 429)
-            {
-                isEmoticonClicked = true;
-            }
-            else if (clickY >= 469 && clickY <= 589)
-            {
-                isEmoticonClicked = true;
-            }
-        }
-    }
-    delay(1000); // Let the sad emoticon to delay to 1 second
+    // Show the emoticon for 1 second and see if it gets clicked
+    if (waitForEmoticonClick(x, y, size, 1000))
+        isEmoticonClicked = true;
 }
 
 class Player;
@@ -318,18 +195,18 @@ public:
     {
         clearviewport();
         settextstyle(BOLD_FONT, HORIZ_DIR, 3);
-        outtextxy(100, 100, "INSTRUCTIONS:");
-        outtextxy(100, 200, "Whack up as many marks as you can within 30 seconds!");
-        outtextxy(100, 220, "Top 3 marks are displayed on the scoreboard!");
-        outtextxy(100, 240, "Marks lower than 0 will cause the game to end.");
-        outtextxy(100, 290, "Press the spacebar to alternate between the tools (Hammer - To hit, Claw - To grab)");
-        outtextxy(100, 340, "1. Grab happy emoticons. +30m");
-        outtextxy(100, 390, "2. Grab sad emoticons. -15m");
-        outtextxy(100, 440, "3. Grab angry emoticons. -20m");
-        outtextxy(100, 490, "4. Hit happy emoticons. -10m");
-        outtextxy(100, 540, "5. Hit sad emoticons once. +15m");
-        outtextxy(100, 590, "6. Hit angry emoticons twice. +20m");
-        outtextxy(100, 640, "Whack your negative emotions away! Press any key to return to main menu.");
+        outtextxy(100, 100, const_cast<char *>("INSTRUCTIONS:"));
+        outtextxy(100, 200, const_cast<char *>("Whack up as many marks as you can within 30 seconds!"));
+        outtextxy(100, 220, const_cast<char *>("Top 3 marks are displayed on the scoreboard!"));
+        outtextxy(100, 240, const_cast<char *>("Marks lower than 0 will cause the game to end."));
+        outtextxy(100, 290, const_cast<char *>("Press the spacebar to alternate between the tools (Hammer - To hit, Claw - To grab)"));
+        outtextxy(100, 340, const_cast<char *>("1. Grab happy emoticons. +30m"));
+        outtextxy(100, 390, const_cast<char *>("2. Grab sad emoticons. -15m"));
+        outtextxy(100, 440, const_cast<char *>("3. Grab angry emoticons. -20m"));
+        outtextxy(100, 490, const_cast<char *>("4. Hit happy emoticons. -10m"));
+        outtextxy(100, 540, const_cast<char *>("5. Hit sad emoticons once. +15m"));
+        outtextxy(100, 590, const_cast<char *>("6. Hit angry emoticons twice. +20m"));
+        outtextxy(100, 640, const_cast<char *>("Whack your negative emotions away! Press any key to return to main menu."));
 
         getch();        // Press any character to exit instructions
         drawMainPage(); // Back to main page
@@ -412,11 +289,12 @@ public:
 
     void drawScoreboard(int m)
     {
-        int marks[MAX_MARKS] = {45, 26, 64, 25, 75, 85, 37}; // Assume there is already marks from players before
+        const int TOTAL_MARKS = MAX_MARKS + 1;                    // 7 earlier players + this one
+        int marks[TOTAL_MARKS] = {45, 26, 64, 25, 75, 85, 37, 0}; // Assume there is already marks from players before
         int centerX = SCREENWIDTH / 2;
         int centerY = SCREENHEIGHT / 2;
 
-        marks[7] = m; // Marks get from the demo player
+        marks[MAX_MARKS] = m; // Marks get from the demo player (index 7, now in range)
 
         // Draw scoreboard background
         setbkcolor(BLACK);
@@ -432,9 +310,9 @@ public:
 
         string top1, top2, top3;
         string yourMark;
-        for (int i = 0; i < MAX_MARKS; i++)
+        for (int i = 0; i < TOTAL_MARKS - 1; i++)
         {
-            for (int j = 0; j < MAX_MARKS - i; j++)
+            for (int j = 0; j < TOTAL_MARKS - 1 - i; j++)
             {
                 if (marks[j] < marks[j + 1])
                 {
@@ -639,7 +517,7 @@ private:
     Marks mark;
 
 public:
-    EmoWhacker() : hammer(100, 100, 0, 0, 100, 30, 40), claw(100, 100, 100, 100, 100, 30, 40), activeTool(0)
+    EmoWhacker() : hammer(100, 100, 0, 0, 100, 30, 40), claw(100, 100, 100, 100, 100, 30, 40), emo(nullptr), activeTool(0)
     {
         name = "";
         int holeGridWidth = GRIDSIZE * HOLEWIDTH + (GRIDSIZE - 1) * HOLEGAP;
@@ -663,7 +541,7 @@ public:
         }
     }
     void setName(string n) { name = n; }
-    int getMark() { return (emo->getMark()); }
+    int getMark() { return emo ? emo->getMark() : 0; }
     void drawBackground() { setbkcolor(RGB(152, 251, 152)); }
 
     void drawHoles()
@@ -677,13 +555,13 @@ public:
     {
         if (activeTool == 0)
         {
-            hammer.drawHammer();
-            hammer.setGraphicPosition(mousex(), mousey());
+            hammer.setGraphicPosition(mousex(), mousey()); // move first, then draw,
+            hammer.drawHammer();                           // or the tool lags a frame
         }
         else
         {
-            claw.drawClaw();
             claw.setGraphicPosition(mousex(), mousey());
+            claw.drawClaw();
         }
     }
 
@@ -760,6 +638,8 @@ public:
                 int emoticonType = rand() % 3; // 0 for happy, 1 for sad, 2 for angry
 
                 // Draw the corresponding emoticon based on the random type
+                delete emo; // free last frame's emoticon before allocating another
+                emo = nullptr;
                 if (emoticonType == 0)
                 {
                     emo = new Happy();
@@ -789,15 +669,15 @@ public:
             }
             else
             {
-                emo->setMark(playerMarks);
+                if (emo) emo->setMark(playerMarks);
                 break;
             }
             currentTime = static_cast<int>(time(nullptr));
             isEmoticonClicked = false;
         }
-        emo->setMark(playerMarks);
+        if (emo) emo->setMark(playerMarks);
     }
-    ~EmoWhacker() {}
+    ~EmoWhacker() { delete emo; }
 };
 
 int main()
